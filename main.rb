@@ -37,13 +37,12 @@ def task_3
         print "0 - выйти из программы \n1 - первое задание \n2 - второе задание \n>> "
     check = gets.to_i
     if check == 1
-        task_1()
+        task_1
         elsif check == 2
-        task_2()
+            task_2
     elsif check == 0 
     break
     end 
 end
 end
-
 task_3
