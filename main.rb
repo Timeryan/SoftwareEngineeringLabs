@@ -1,94 +1,185 @@
-def task_1
-  file_data = File.read("input.txt").split ("\n")
-  loop do
-    puts("Введите возраст =>")
-    age = gets.chomp
-    if age == "-1"
-      break
+module Resource
+  def connection(routes)
+    if routes.nil?
+      puts "No route matches for #{self}"
+      return
     end
-    file_data.length.times do |i|
-      if file_data[i].end_with?(age)
-        File.write("result.txt", "#{file_data[i]}\n", mode: "a")
+
+    loop do
+      print 'Choose verb to interact with resources (GET/POST/PUT/DELETE) / q to exit: '
+      verb = gets.chomp
+      break if verb == 'q'
+
+      action = nil
+
+      if verb == 'GET'
+        print 'Choose action (index/show) / q to exit: '
+        action = gets.chomp
+        break if action == 'q'
+      end
+
+      if action == "index" || action == "show"
+        routes[verb][action].call
+      end
+
+      if verb == "POST" || verb == "PUT" || verb == "DELETE"
+        routes[verb].call
       end
     end
-    result_data = File.read("result.txt").split("\n")
-    file_data.delete_if { |res| result_data.include? res }
-    if file_data.length == 0
-      break
-    end
-  end
-  file_output_data = File.read("result.txt")
-  puts(file_output_data)
-end
-
-def deposit(balance, add_sum)
-  if add_sum > 0
-    puts("Вы внесли на счёт: #{add_sum}$")
-    balance += add_sum
-    puts("Ваш баланс: #{balance}$")
-    balance
-  elsif
-  puts "Сумма не валидна(меньше нуля)"
-  end
-end
-def withdraw(balance, get_sum)
-  if get_sum < 0
-    puts "Сумма не валидна(меньше нуля)"
-  elsif balance < get_sum
-    puts "У вас на счету не сдостаточно средст"
-  else
-    puts("Вы сняли со счёта: #{get_sum}$")
-    balance -= get_sum
-    puts("Ваш баланс: #{balance}$")
-    balance
   end
 end
 
-def get_balance(balance)
-    puts("Ваш баланс: #{balance}$")
-end
+class PostsController
+  extend Resource
 
-def task_2
+  def initialize
+    @posts = []
+  end
 
-  balance = File.file?("balance.txt") ? File.read("balance.txt") : 100.0
-  balance = balance.to_f
-
-  loop do
-    puts "D - внести деньги\nW - вывести деньги\nB - проверить баланс\nQ - выйти"
-    x = gets.chomp
-    x = x.upcase
-    case x
-    when "D"
-      puts "Введите сумму для депозита >>"
-      add_sum = gets.to_f
-      balance = deposit(balance,add_sum)
-    when "W"
-      puts "Введите сумму для снятия со счета >>"
-      get_sum = gets.to_f
-      balance = withdraw(balance,get_sum)
-    when "B"
-      get_balance(balance)
-    when "Q"
-      File.write("balance.txt", balance)
-      return
+  def index
+    if @posts.length == 0
+      puts 'Нет постов'
     else
-      puts "Неизвестная команда"
+      @posts.length.times do |i|
+      puts "#{i}: #{@posts[i]}"
+      end
+    end
+  end
+
+  def show
+    print 'Ведите индетификатор поста:'
+    key = gets.to_i
+    if @posts.length >= key
+    puts "#{key}: #{@posts[key]}"
+    else
+    puts('Нет записей с таким ключом')
+    end
+  end
+
+  def create
+    print 'Ведите текс поста:'
+    text = gets.chomp
+    @posts << (text)
+    puts "#{ @posts.index(text)}: #{text}"
+  end
+
+  def update
+    print 'Ведите индетификатор поста:'
+    key = gets.to_i
+    if @posts.length >= key
+      print 'Ведите новый текс поста:'
+      text = gets.chomp
+      @posts[key] = text
+      puts "#{key}: #{text}"
+    else
+    puts('Нет записей с таким ключом')
+    end
+  end
+
+  def destroy
+    print 'Ведите индетификатор поста:'
+    key = gets.to_i
+    if @posts.length >= key
+      @posts.delete_at(key)
+    else
+      puts('Нет записей с таким ключом')
     end
   end
 end
 
-def task_3
-  loop do
-    print "0 - выйти из программы \n1 - первое задание \n2 - второе задание \n>> "
-    check = gets.to_i
-    if check == 1
-      task_1
-    elsif check == 2
-      task_2
-    elsif check == 0
-      break
+class CommentsController
+extend Resource
+
+  def initialize
+    @comments = []
+  end
+
+  def index
+    if @comments.length == 0
+        puts 'Нет комментариев'
+    else
+      @comments.length.times do |i|
+        puts "#{i}: #{@comments[i]}"
+      end
+    end
+  end
+
+  def show
+    print 'Ведите индетификатор комментария:'
+    key = gets.to_i
+    if @comments.length >= key
+      puts "#{key}: #{@comments[key]}"
+    else
+      puts('Нет комментариев с таким ключом')
+    end
+  end
+
+  def create
+    print 'Ведите текс комментария:'
+    text = gets.chomp
+    @comments << (text)
+    puts "#{ @comments.index(text)}: #{text}"
+  end
+
+  def update
+    print 'Ведите индетификатор комментария:'
+    key = gets.to_i
+    if @comments.length >= key
+      print 'Ведите новый текс комментария:'
+      text = gets.chomp
+      @comments[key] = text
+      puts "#{key}: #{text}"
+    else
+      puts('Нет комментариев с таким ключом')
+    end
+  end
+
+  def destroy
+    print 'Ведите индетификатор комментария:'
+    key = gets.to_i
+    if @comments.length >= key
+      @comments.delete_at(key)
+    else
+      puts('Нет комментариев с таким ключом')
     end
   end
 end
 
-task_3
+class Router
+  def initialize
+    @routes = {}
+  end
+
+  def init
+    resources(PostsController, 'posts')
+    resources(CommentsController, 'comments')
+
+    loop do
+      print 'Choose resource you want to interact (1 - Posts, 2 - Comments, q - Exit): '
+      choise = gets.chomp
+
+      PostsController.connection(@routes['posts']) if choise == '1'
+      CommentsController.connection(@routes['comments']) if choise == '2'
+      break if choise == 'q'
+    end
+
+    puts 'Good bye!'
+  end
+
+  def resources(klass, keyword)
+    controller = klass.new
+    @routes[keyword] = {
+      'GET' => {
+        'index' => controller.method(:index),
+        'show' => controller.method(:show)
+      },
+      'POST' => controller.method(:create),
+      'PUT' => controller.method(:update),
+      'DELETE' => controller.method(:destroy)
+    }
+  end
+end
+
+router = Router.new
+
+router.init
