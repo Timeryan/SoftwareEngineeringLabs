@@ -1,59 +1,66 @@
+require 'socket'
+
 class CashMachine
   attr_reader :balance
+
   def initialize(balance)
     @balance = balance;
   end
 
-  def deposit(add_sum)
+  def deposit(connection, add_sum)
     if add_sum > 0
-      puts("Вы внесли на счёт: #{add_sum}$")
+      connection.print "You add to your balance: #{add_sum}$</br>"
       @balance += add_sum
-      puts("Ваш баланс: #{@balance}$")
-    elsif
-    puts "Сумма не валидна(меньше нуля)"
+      connection.print "Your balance: #{@balance}$"
+    elsif connection.print "Sum is invalid"
     end
   end
 
-  def withdraw( get_sum)
+  def withdraw(connection, get_sum)
     if get_sum < 0
-      puts "Сумма не валидна(меньше нуля)"
+      connection.print "Sum is invalid"
     elsif balance < get_sum
-      puts "У вас на счету не сдостаточно средст"
+      connection.print "You don't have enough money in your account"
     else
-      puts("Вы сняли со счёта: #{get_sum}$")
+      connection.print("You withdrawn from your balance: #{get_sum}$</br>")
       @balance -= get_sum
-      puts("Ваш баланс: #{@balance}$")
+      connection.print "Your balance: #{@balance}$"
     end
   end
 
-  def get_balance
-    puts("Ваш баланс: #{@balance}$")
+  def get_balance(connection)
+    connection.print "Your balance: #{@balance}$"
   end
 
   def self.init
     balance = File.file?("balance.txt") ? File.read("balance.txt") : 100.0
     bank_account = CashMachine.new(balance.to_f)
 
-    loop do
-      puts "D - внести деньги\nW - вывести деньги\nB - проверить баланс\nQ - выйти"
-      x = gets.chomp
-      x = x.upcase
-      case x
-      when "D"
-        puts "Введите сумму для депозита >>"
-        add_sum = gets.to_f
-        bank_account.deposit(add_sum)
-      when "W"
-        puts "Введите сумму для снятия со счета >>"
-        get_sum = gets.to_f
-        bank_account.withdraw(get_sum)
-      when "B"
-        bank_account.get_balance
-      when "Q"
+    server = TCPServer.new('0.0.0.0', 3000)
+
+    while (connection = server.accept)
+      request = connection.gets
+      method, full_path = request.split(' ')
+      path, param = full_path.split('?')
+
+      connection.print "HTTP/1.1 200\r\n"
+      connection.print "Content-Type: text/html\r\n"
+      connection.print "\r\n"
+
+      case path
+      when "/"
+        connection.print "/deposit?50 - add to your balance 50$</br>/withdrawn?50 - withdrawn from your balance 50$</br>/balance - check your balance</br>/exit - exit"
+      when "/deposit"
+        bank_account.deposit(connection, param.to_i)
+      when "/withdraw"
+        bank_account.withdraw(connection, param.to_i)
+      when "/balance"
+        bank_account.get_balance(connection)
+      when "/exit"
         File.write("balance.txt", balance)
         return
       else
-        puts "Неизвестная команда"
+        connection.print "Unbalanced request:" + "\nMethod: " + method + "Path: " + path
       end
     end
   end
