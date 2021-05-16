@@ -1,0 +1,18 @@
+<div class="form-new-mark">
+  <div class="form-new-mark__container">
+    <%= form_for :mark, url: lab_marks_path do |f| %>
+      <div class="form-new-mark__name">
+        <%= f.label :points %>
+      </div>
+        <%= f.text_field :points, class: "form-new-mark__mark-input", type: "number"%>
+      <div class="form-new-mark__submit">
+        <% if @mark.errors.any? %>
+          <div class="form-new-mark__valid-message">
+            Enter an points from 1-100
+          </div>
+        <% end %>
+        <%= f.submit class: "btn" %>
+      </div>
+    <% end %>
+  </div>
+</div>

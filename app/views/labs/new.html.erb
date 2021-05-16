@@ -1,0 +1,20 @@
+<div class="form-new-report">
+  <div class="form-new-report__container">
+    <%= form_for :lab, url: labs_path do |f| %>
+      <div class="form-new-report__name"><%= f.label :title %></div>
+      <%= f.text_field :title, class: "form-new-report__title-input", placeholder: "Title" %>
+
+      <div class="form-new-report__name"><%= f.label :text %></div>
+      <%= f.text_area :text, class: "form-new-report__text-input", placeholder: "Text" %>
+
+      <div class="form-new-report__submit">
+        <% if @lab.errors.any? %>
+          <% @lab.errors.full_messages.each do |msg| %>
+            <div class="form-new-report__valid-message"><%= msg %></div>
+          <% end %>
+        <% end %>
+        <%= f.submit class: "btn" %>
+      </div>
+    <% end %>
+  </div>
+</div>

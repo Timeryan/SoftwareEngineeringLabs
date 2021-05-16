@@ -1,0 +1,30 @@
+<div class="lab">
+  <h1 class="lab__logo">Labs reports</h1>
+  <div class="lab__container">
+    <%= link_to new_lab_path do %>
+      <button class="btn">Add report</button>
+    <% end %>
+    <% @labs.each do |lab| %>
+      <div class="report">
+        <div class="report__title"><%= lab.title %></div>
+        <div class="report__text"><%= lab.text %></div>
+        <div class="report__btns">
+
+          <% if !lab.mark %>
+            <%= link_to new_lab_mark_url lab do %>
+              <button class="btn">Add mark</button>
+            <% end %>
+          <% end %>
+
+          <% if lab.mark %>
+            <span class="report__mark">Mark: <%= lab.mark.letter %> (<%= lab.mark.points %>)</span>
+          <% end %>
+
+          <%= link_to lab, method: :delete do %>
+            <button class="btn">Remove</button>
+          <% end %>
+        </div>
+      </div>
+    <% end %>
+  </div>
+</div>

@@ -1,0 +1,102 @@
+.lab {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-top: 100px;
+
+  &__container {
+    width: 720px;
+  }
+
+  &__logo {
+  }
+}
+
+.btn {
+  padding: 7px 30px;
+  border-radius: 10px;
+  border: 1px solid black;
+  transition: 0.1s;
+  align-self: center;
+  font-size: 18px;
+
+  &:hover {
+    transform: scale(1.02);
+  }
+
+  &:active {
+    background: #d2d2d2;
+  }
+}
+
+.report {
+  margin-top: 20px;
+  padding: 10px 20px;
+  border: 1px solid #5b5b5b;
+  border-radius: 10px;
+
+  &__title {
+    font-size: 20px;
+    font-weight: 600;
+    word-break: break-word;
+  }
+
+  &__text {
+    font-size: 16px;
+    font-weight: 300;
+    padding: 10px 0;
+    word-break: break-word;
+  }
+
+  &__btns {
+    width: 280px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+}
+
+.form-new-report {
+  display: flex;
+  justify-content: center;
+  margin-top: 230px;
+
+  &__container {
+    width: 500px;
+  }
+  &__name {
+    font-size: 18px;
+    margin-bottom: 10px;
+  }
+  &__title-input {
+    height: 40px;
+    width: 100%;
+    font-size: 24px;
+    padding: 0  10px;
+    margin-bottom: 20px;
+    border-radius: 10px;
+    border: 1px solid black;
+    outline:none;
+  }
+  &__text-input {
+    height: 250px;
+    width: 100%;
+    font-size: 24px;
+    resize: none;
+    padding: 10px;
+    border-radius: 10px;
+    border: 1px solid black;
+    outline:none;
+  }
+  &__submit{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-top: 20px;
+  }
+  &__valid-message{
+    color: #730E15;
+    padding-bottom: 10px;
+
+  }
+}
